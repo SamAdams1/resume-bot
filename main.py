@@ -1,5 +1,39 @@
 # query example: "software engineer" (remote) site:boards.greenhouse.io"
+import time
+from datetime import datetime
+import os
+
 import requests
+from sqlalchemy import create_engine, Column, String, DateTime, Integer
+from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.exc import SQLAlchemyError
+
+# Database configuration
+DATABASE_URL = f"postgresql://postgres:{os.getenv('POSTGRES_PASSWORD')}@localhost:5432/apply_jobs"
+
+
+# Create engine and session
+engine = create_engine(DATABASE_URL, echo=False)
+Session = sessionmaker(bind=engine)
+Base = declarative_base()
+
+# Define Job model
+class Job(Base):
+    __tablename__ = "jobs"
+    
+    id = Column(Integer, primary_key=True)
+    url = Column(String, unique=True, nullable=False)
+    title = Column(String, nullable=False)
+    company = Column(String, nullable=True)
+    date_found = Column(DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f"<Job(url='{self.url}', title='{self.title}', company='{self.company}')>"
+
+# Create tables
+Base.metadata.create_all(engine)
+
+rate_limit_seconds = 1
 
 # Add user-agent header for Google
 HEADERS = {
@@ -7,15 +41,13 @@ HEADERS = {
     'Accept': 'application/json'
 }
 
-# Use a public SearXNG instance (no local setup needed)
 SEARXNG_URL = "http://localhost:8080"
-# SEARXNG_URL = "https://searx.be"  # or try: https://search.auraes.de
 
 SITES = [
     "boards.greenhouse.io",
-    "jobs.lever.co",
-    "jobs.ashbyhq.com",
-    "site:myworkdayjobs.com"
+    # "jobs.lever.co",
+    # "jobs.ashbyhq.com",
+    # "site:myworkdayjobs.com"
 ]
 
 ROLES = [
@@ -40,9 +72,11 @@ def iterate_queries():
     for site in SITES:
         for role in ROLES:
             for include in INCLUDE:
-                # Build query without site: prefix (filter manually instead)
-                query = f'"{role}" "{include}" site:{site}'
-                search_query(query)
+                for exclude in EXCLUDE:
+                    # Build query without site: prefix (filter manually instead)
+                    query = f'"{role}" "{include}" -"{exclude}" site:{site}'
+                    search_query(query)
+                    time.sleep(rate_limit_seconds)
 
 def search_query(query):
     """Query local SearXNG instance"""
@@ -62,6 +96,8 @@ def search_query(query):
         print(f"Query: {query}")
         
         results = response.json()
+        # print(f"Results: {results}")
+        # return results
         
         for result in results.get('results', []):
             url = result.get('url', '')
@@ -79,5 +115,8 @@ def search_query(query):
     except requests.RequestException as e:
         print(f"Error querying SearXNG: {e}")
 
-# iterate_queries()
-search_query('"software engineer" "remote" site:boards.greenhouse.io')
+def write_results_to_database(results):
+
+
+iterate_queries()
+# search_query('"software engineer" "remote" site:boards.greenhouse.io')
