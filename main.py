@@ -4,12 +4,17 @@ from datetime import datetime
 import os
 
 import requests
-from sqlalchemy import create_engine, Column, String, DateTime, Integer
+from sqlalchemy import create_engine, Column, String, DateTime, Integer, Boolean
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
+from dotenv import load_dotenv
+load_dotenv()
 
 # Database configuration
-DATABASE_URL = f"postgresql://postgres:{os.getenv('POSTGRES_PASSWORD')}@localhost:5432/apply_jobs"
+PASSWORD = os.getenv('POSTGRES_PASSWORD')
+if not PASSWORD:
+    raise ValueError("POSTGRES_PASSWORD environment variable not set")
+DATABASE_URL = f"postgresql://postgres:{PASSWORD}@localhost:5432/apply_jobs"
 
 
 # Create engine and session
@@ -25,6 +30,8 @@ class Job(Base):
     url = Column(String, unique=True, nullable=False)
     title = Column(String, nullable=False)
     company = Column(String, nullable=True)
+    applied = Column(Boolean, default=False), 
+    match_percent = Column(Integer, nullable=True)
     date_found = Column(DateTime, default=datetime.utcnow)
     
     def __repr__(self):
@@ -66,7 +73,7 @@ INCLUDE = ["remote", "New Hampshire", "NH"]
 EXCLUDE = ["senior", "staff", "principal", "lead", "intern", "sr"]
 
 # Main search engines only
-ENGINES = "bing,brave,google,duckduckgo"
+ENGINES = "bing,brave,duckduckgo"#,google"
 
 def iterate_queries():
     for site in SITES:
@@ -77,13 +84,13 @@ def iterate_queries():
                     query = f'"{role}" "{include}" -"{exclude}" site:{site}'
                     search_query(query)
                     time.sleep(rate_limit_seconds)
-
+  
 def search_query(query):
-    """Query local SearXNG instance"""
+    """Query local SearXNG instance and store results in database"""
     params = {
         'q': query,
         'format': 'json',
-        # 'engines': ENGINES,  # Filter to main search engines
+        'engines': ENGINES,  
     }
     
     try:
@@ -92,13 +99,16 @@ def search_query(query):
         
         # Debug: print response
         print(f"Response status: {response.status_code}")
-        print(f"Response text: {response.text[:200]}")
         print(f"Query: {query}")
         
-        results = response.json()
-        # print(f"Results: {results}")
-        # return results
-        
+        parse_query_results(response.json())
+            
+    except requests.RequestException as e:
+        print(f"Error querying SearXNG: {e}")
+
+def parse_query_results(results):
+        jobs_to_save = []
+
         for result in results.get('results', []):
             url = result.get('url', '')
             
@@ -112,11 +122,41 @@ def search_query(query):
             print(f"Found: {url}")
             print(f"  Title: {result.get('title')}")
             
-    except requests.RequestException as e:
-        print(f"Error querying SearXNG: {e}")
+            # Extract company name from URL (simplified)
+            company = url.split('/')[3].replace('www.', '') if url else 'Unknown'
+            
+            job = Job(
+                url=url,
+                title=result.get('title', ''),
+                company=company
+            )
+            jobs_to_save.append(job)
+        
+        # Write results to database
+        if jobs_to_save:
+            write_results_to_database(jobs_to_save)
 
-def write_results_to_database(results):
+def write_results_to_database(jobs):
+    """Write job results to PostgreSQL database"""
+    session = Session()
+    try:
+        for job in jobs:
+            # Check if job already exists (by URL)
+            existing = session.query(Job).filter(Job.url == job.url).first()
+            if not existing:
+                session.add(job)
+                print(f"  ✓ Saved to DB: {job.title}")
+            else:
+                print(f"  ↻ Already in DB: {job.title}")
+        
+        session.commit()
+        print(f"Successfully saved {len([j for j in jobs if not session.query(Job).filter(Job.url == j.url).first()])} new jobs")
+    except SQLAlchemyError as e:
+        session.rollback()
+        print(f"Database error: {e}")
+    finally:
+        session.close()
 
 
-iterate_queries()
-# search_query('"software engineer" "remote" site:boards.greenhouse.io')
+# iterate_queries()
+search_query('"software engineer" "remote" site:boards.greenhouse.io')
