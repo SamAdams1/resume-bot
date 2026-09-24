@@ -22,7 +22,7 @@ HEADERS = {
 }
 
 SEARXNG_URL = "http://localhost:8080"
-ENGINES = "bing"
+ENGINES = "bing,duckduckgo,brave,google"
 
 # Job search parameters
 SITES = [

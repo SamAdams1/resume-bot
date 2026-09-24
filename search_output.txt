@@ -1,0 +1,38 @@
+
+[2026-09-24 14:11:22] Search started for profile test
+Engines: bing,duckduckgo,google,brave
+Sites: jobs.ashbyhq.com
+Roles: software engineer
+Locations: remote
+Exclude: intern, lead, principal
+
+
+[2026-09-24 14:11:22] (1/1) Querying site:jobs.ashbyhq.com role:software engineer location:remote
+Error querying SearXNG on page 1: HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /search?q=site%3Ajobs.ashbyhq.com+%22software+engineer%22+%22remote%22&format=json&engines=bing%2Cduckduckgo%2Cgoogle%2Cbrave&pageno=1 (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F8238ED4F0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))
+Error querying SearXNG on page 1: HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /search?q=site%3Ajobs.ashbyhq.com+%22software+engineer%22+%22remote%22&format=json&engines=bing%2Cduckduckgo%2Cgoogle%2Cbrave&pageno=1 (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F8238BDA30>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))
+Error querying SearXNG on page 1: HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /search?q=site%3Ajobs.ashbyhq.com+%22software+engineer%22+%22remote%22&format=json&engines=bing%2Cduckduckgo%2Cgoogle%2Cbrave&pageno=1 (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F8238EFD70>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))
+Too many errors. Stopping search.
+Total results found: 0
+
+
+[2026-09-24 14:13:05] Search complete. Total results found: 0
+[2026-09-24 14:13:05] Search finished.
+
+[2026-09-24 14:13:23] Search started for profile test
+Engines: duckduckgo
+Sites: jobs.ashbyhq.com
+Roles: software engineer
+Locations: remote
+Exclude: intern, lead, principal
+
+
+[2026-09-24 14:13:23] (1/1) Querying site:jobs.ashbyhq.com role:software engineer location:remote
+Error querying SearXNG on page 1: HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /search?q=site%3Ajobs.ashbyhq.com+%22software+engineer%22+%22remote%22&format=json&engines=duckduckgo&pageno=1 (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F8238EFAA0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))
+Error querying SearXNG on page 1: HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /search?q=site%3Ajobs.ashbyhq.com+%22software+engineer%22+%22remote%22&format=json&engines=duckduckgo&pageno=1 (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F8238BE2D0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))
+Error querying SearXNG on page 1: HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /search?q=site%3Ajobs.ashbyhq.com+%22software+engineer%22+%22remote%22&format=json&engines=duckduckgo&pageno=1 (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F8238BD550>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))
+Too many errors. Stopping search.
+Total results found: 0
+
+
+[2026-09-24 14:15:05] Search complete. Total results found: 0
+[2026-09-24 14:15:05] Search finished.

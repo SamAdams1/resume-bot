@@ -1,0 +1,65 @@
+[
+  {
+    "id": "user-1",
+    "name": "prod",
+    "sites": [
+      "boards.greenhouse.io",
+      "jobs.lever.co"
+    ],
+    "engines": "bing,duckduckgo",
+    "roles": [
+      "software engineer",
+      "backend engineer"
+    ],
+    "locations": [
+      "remote",
+      "New Hampshire"
+    ],
+    "exclude": [
+      "senior",
+      "staff",
+      "principal"
+    ]
+  },
+  {
+    "id": "user-2",
+    "name": "test",
+    "sites": [
+      "jobs.ashbyhq.com"
+    ],
+    "engines": "duckduckgo",
+    "roles": [
+      "software engineer"
+    ],
+    "locations": [
+      "remote"
+    ],
+    "exclude": [
+      "intern",
+      "lead",
+      "principal"
+    ]
+  },
+  {
+    "id": "user-3",
+    "name": "Casey",
+    "sites": [
+      "apply.workable.com",
+      "jobs.smartrecruiters.com"
+    ],
+    "engines": "duckduckgo,google",
+    "roles": [
+      "web developer",
+      "software developer"
+    ],
+    "locations": [
+      "remote",
+      "New York"
+    ],
+    "exclude": [
+      "senior",
+      "sr",
+      "staff"
+    ]
+  }
+]

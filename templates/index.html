@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Apply Jobs - Local Web App</title>
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --panel: #ffffff;
+        --ink: #1a2230;
+        --muted: #5a6575;
+        --line: #d5deea;
+        --brand: #0b6e4f;
+        --brand-2: #1657a4;
+        --warn: #8b2d2d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 10% 10%, #dceafc 0%, transparent 40%),
+          radial-gradient(circle at 85% 0%, #dff4e8 0%, transparent 35%),
+          var(--bg);
+      }
+
+      .app {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 18px;
+      }
+
+      .topbar {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+      }
+
+      .tab-btn {
+        border: 1px solid var(--line);
+        background: #f8fbff;
+        color: var(--ink);
+        padding: 8px 12px;
+        border-radius: 9px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .tab-btn.active {
+        background: var(--brand-2);
+        color: white;
+        border-color: var(--brand-2);
+      }
+
+      .view {
+        margin-top: 14px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 14px;
+        display: none;
+      }
+
+      .view.active {
+        display: block;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      label {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      textarea,
+      input,
+      select {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 9px;
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+      }
+
+      textarea {
+        min-height: 90px;
+        resize: vertical;
+      }
+
+      .actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      button {
+        border: 0;
+        border-radius: 9px;
+        padding: 9px 13px;
+        cursor: pointer;
+        color: white;
+        font-weight: 600;
+        background: var(--brand);
+      }
+
+      button.secondary {
+        background: #4d5a6f;
+      }
+      button.warn {
+        background: var(--warn);
+      }
+
+      .preview,
+      .progress,
+      .log {
+        margin-top: 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px;
+        background: #fbfdff;
+      }
+
+      .mono {
+        font-family: Consolas, "Courier New", monospace;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        margin-top: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 780px;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        padding: 8px;
+        vertical-align: top;
+        font-size: 13px;
+      }
+
+      th {
+        background: #edf5ff;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+
+      .small {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <div>
+          <h1 style="margin: 0; font-size: 22px">Apply Jobs - Local UI</h1>
+          <div class="small">
+            One page app with separate Search and Database views
+          </div>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" data-view="search-view">
+            Search View
+          </button>
+          <button class="tab-btn" data-view="database-view">
+            Database View
+          </button>
+        </div>
+      </div>
+
+      <section id="search-view" class="view active">
+        <h2 style="margin-top: 0">Search View</h2>
+        <div class="grid">
+          <div class="field">
+            <label for="profile-select">Saved User</label>
+            <select id="profile-select"></select>
+          </div>
+          <div class="field">
+            <label for="profile-name">User Name</label>
+            <input id="profile-name" placeholder="Example: Alex" />
+            <div class="actions">
+              <button id="save-profile-btn" class="secondary">
+                Save User Changes
+              </button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="engines">ENGINES (comma-separated)</label>
+            <input id="engines" placeholder="bing,duckduckgo" />
+          </div>
+          <div class="field">
+            <label for="sites">SITES (one per line)</label>
+            <textarea id="sites"></textarea>
+          </div>
+          <div class="field">
+            <label for="roles">ROLES (one per line)</label>
+            <textarea id="roles"></textarea>
+          </div>
+          <div class="field">
+            <label for="locations">LOCATIONS (one per line)</label>
+            <textarea id="locations"></textarea>
+          </div>
+          <div class="field">
+            <label for="exclude">EXCLUDE (one per line)</label>
+            <textarea id="exclude"></textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="search-btn">Start Search Loop</button>
+          <span class="small">Search logs also saved to search_output.txt</span>
+        </div>
+
+        <div class="preview">
+          <strong>Search Preview (first 6):</strong>
+          <div id="query-preview" class="mono" style="margin-top: 8px"></div>
+        </div>
+
+        <div class="progress">
+          <strong>Progress</strong>
+          <div id="progress-text" class="mono" style="margin-top: 8px">
+            No run yet.
+          </div>
+        </div>
+
+        <div class="log">
+          <strong>Search Log</strong>
+          <div
+            id="log-text"
+            class="mono"
+            style="margin-top: 8px; max-height: 240px; overflow-y: auto"
+          >
+            No logs yet.
+          </div>
+        </div>
+      </section>
+
+      <section id="database-view" class="view">
+        <h2 style="margin-top: 0">Database View</h2>
+        <div class="actions">
+          <button id="refresh-db-btn" class="secondary">Refresh Tables</button>
+        </div>
+
+        <h3>jobs</h3>
+        <div id="jobs-count" class="small"></div>
+        <div class="table-wrap">
+          <table id="jobs-table"></table>
+        </div>
+
+        <h3>excluded_jobs</h3>
+        <div id="excluded-count" class="small"></div>
+        <div class="table-wrap">
+          <table id="excluded-table"></table>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const state = {
+        profiles: [],
+        selectedProfileIndex: 0,
+        pollTimer: null,
+        viewRegistry: {
+          "search-view": loadSearchView,
+          "database-view": loadDatabaseView,
+        },
+      };
+
+      function splitLines(text) {
+        return String(text || "")
+          .split("\n")
+          .map((x) => x.trim())
+          .filter(Boolean);
+      }
+
+      function setActiveView(viewId) {
+        document.querySelectorAll(".tab-btn").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.view === viewId);
+        });
+        document.querySelectorAll(".view").forEach((view) => {
+          view.classList.toggle("active", view.id === viewId);
+        });
+
+        if (state.viewRegistry[viewId]) {
+          state.viewRegistry[viewId]();
+        }
+      }
+
+      function profileFromForm(current) {
+        return {
+          id: current.id,
+          name:
+            document.getElementById("profile-name").value.trim() ||
+            current.name,
+          engines: document.getElementById("engines").value.trim(),
+          sites: splitLines(document.getElementById("sites").value),
+          roles: splitLines(document.getElementById("roles").value),
+          locations: splitLines(document.getElementById("locations").value),
+          exclude: splitLines(document.getElementById("exclude").value),
+        };
+      }
+
+      function fillForm(profile) {
+        document.getElementById("profile-name").value = profile.name;
+        document.getElementById("engines").value = profile.engines;
+        document.getElementById("sites").value = profile.sites.join("\n");
+        document.getElementById("roles").value = profile.roles.join("\n");
+        document.getElementById("locations").value =
+          profile.locations.join("\n");
+        document.getElementById("exclude").value = profile.exclude.join("\n");
+        renderPreview();
+      }
+
+      function renderProfileSelect() {
+        const select = document.getElementById("profile-select");
+        select.innerHTML = "";
+        state.profiles.forEach((profile, index) => {
+          const option = document.createElement("option");
+          option.value = String(index);
+          option.textContent = profile.name;
+          select.appendChild(option);
+        });
+        select.value = String(state.selectedProfileIndex);
+      }
+
+      function renderPreview() {
+        const profile = state.profiles[state.selectedProfileIndex];
+        if (!profile) {
+          document.getElementById("query-preview").textContent =
+            "No profile selected.";
+          return;
+        }
+
+        const updated = profileFromForm(profile);
+        const lines = [];
+        for (const site of updated.sites) {
+          for (const role of updated.roles) {
+            for (const location of updated.locations) {
+              lines.push(`site:${site} \"${role}\" \"${location}\"`);
+            }
+          }
+        }
+
+        const shown = lines.slice(0, 6);
+        const suffix =
+          lines.length > shown.length
+            ? `\n... plus ${lines.length - shown.length} more`
+            : "";
+        document.getElementById("query-preview").textContent =
+          shown.join("\n") + suffix;
+      }
+
+      async function loadProfiles() {
+        const res = await fetch("/api/profiles");
+        state.profiles = await res.json();
+        state.selectedProfileIndex = 0;
+        renderProfileSelect();
+        fillForm(state.profiles[0]);
+      }
+
+      async function saveProfiles() {
+        const current = state.profiles[state.selectedProfileIndex];
+        state.profiles[state.selectedProfileIndex] = profileFromForm(current);
+
+        const res = await fetch("/api/profiles", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ profiles: state.profiles }),
+        });
+        const data = await res.json();
+        state.profiles = data.profiles;
+        renderProfileSelect();
+        fillForm(state.profiles[state.selectedProfileIndex]);
+        alert("Saved user profile changes.");
+      }
+
+      function progressText(status) {
+        const p = status.progress || { current: 0, total: 0, current_item: "" };
+        const s = status.summary || { queries_completed: 0, results_found: 0 };
+        return [
+          `running: ${status.running}`,
+          `started_at: ${status.started_at || "-"}`,
+          `finished_at: ${status.finished_at || "-"}`,
+          `query_progress: ${p.current}/${p.total}`,
+          `current_item: ${p.current_item || "-"}`,
+          `queries_completed: ${s.queries_completed}`,
+          `results_found: ${s.results_found}`,
+          `error: ${status.error || "-"}`,
+        ].join("\n");
+      }
+
+      async function pollSearchStatus() {
+        const res = await fetch("/api/search/status");
+        const status = await res.json();
+        document.getElementById("progress-text").textContent =
+          progressText(status);
+        document.getElementById("log-text").textContent =
+          (status.logs || []).join("\n") || "No logs yet.";
+
+        if (!status.running && state.pollTimer) {
+          clearInterval(state.pollTimer);
+          state.pollTimer = null;
+        }
+      }
+
+      async function startSearch() {
+        await saveProfiles();
+        const profile = state.profiles[state.selectedProfileIndex];
+
+        const res = await fetch("/api/search/start", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ profileId: profile.id }),
+        });
+        const data = await res.json();
+        if (!data.ok) {
+          alert(data.error || "Could not start search.");
+          return;
+        }
+
+        await pollSearchStatus();
+        if (!state.pollTimer) {
+          state.pollTimer = setInterval(pollSearchStatus, 1500);
+        }
+      }
+
+      function renderTable(tableId, rows) {
+        const table = document.getElementById(tableId);
+        table.innerHTML = "";
+        if (!rows || rows.length === 0) {
+          table.innerHTML = "<tr><td>No rows found.</td></tr>";
+          return;
+        }
+
+        const cols = Object.keys(rows[0]);
+        const thead = document.createElement("thead");
+        const hrow = document.createElement("tr");
+        cols.forEach((col) => {
+          const th = document.createElement("th");
+          th.textContent = col;
+          hrow.appendChild(th);
+        });
+        thead.appendChild(hrow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+        rows.forEach((row) => {
+          const tr = document.createElement("tr");
+          cols.forEach((col) => {
+            const td = document.createElement("td");
+            td.textContent = row[col] == null ? "" : String(row[col]);
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+      }
+
+      async function loadDatabaseView() {
+        const [jobsRes, excludedRes] = await Promise.all([
+          fetch("/api/db/jobs"),
+          fetch("/api/db/excluded-jobs"),
+        ]);
+        const jobsData = await jobsRes.json();
+        const excludedData = await excludedRes.json();
+
+        document.getElementById("jobs-count").textContent =
+          `${jobsData.rows.length} rows (latest first)`;
+        document.getElementById("excluded-count").textContent =
+          `${excludedData.rows.length} rows (latest first)`;
+
+        renderTable("jobs-table", jobsData.rows);
+        renderTable("excluded-table", excludedData.rows);
+      }
+
+      async function loadSearchView() {
+        renderPreview();
+        await pollSearchStatus();
+      }
+
+      function bindEvents() {
+        document.querySelectorAll(".tab-btn").forEach((btn) => {
+          btn.addEventListener("click", () => setActiveView(btn.dataset.view));
+        });
+
+        document
+          .getElementById("profile-select")
+          .addEventListener("change", (e) => {
+            state.selectedProfileIndex = Number(e.target.value);
+            fillForm(state.profiles[state.selectedProfileIndex]);
+          });
+
+        [
+          "profile-name",
+          "engines",
+          "sites",
+          "roles",
+          "locations",
+          "exclude",
+        ].forEach((id) => {
+          document.getElementById(id).addEventListener("input", renderPreview);
+        });
+
+        document
+          .getElementById("save-profile-btn")
+          .addEventListener("click", saveProfiles);
+        document
+          .getElementById("search-btn")
+          .addEventListener("click", startSearch);
+        document
+          .getElementById("refresh-db-btn")
+          .addEventListener("click", loadDatabaseView);
+      }
+
+      async function init() {
+        bindEvents();
+        await loadProfiles();
+        await loadSearchView();
+      }
+
+      init().catch((err) => {
+        console.error(err);
+        alert("Failed to load app. Check terminal for details.");
+      });
+    </script>
+  </body>
+</html>

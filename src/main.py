@@ -26,10 +26,10 @@ def iterate_queries():
 
 if __name__ == "__main__":
     # Run searches for current configuration
-    
-    for site in SITES:
-        results_found = search_query("software engineer", "Remote", site)
-        total_jobs_found += results_found
+    search_query("software engineer", "Remote", "boards.greenhouse.io")
+    # for site in SITES:
+    #     results_found = search_query("software engineer", "Remote", site)
+    #     total_jobs_found += results_found
     
     # Print final summary
     print("\n" + "="*60)
