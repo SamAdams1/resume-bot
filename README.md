@@ -4,12 +4,18 @@ Querying the web:
 searxng
 Camoufox - anti bot blocking
 
-searxng seems to have a lag behind google
-
 ## todo
 
-- store results in postgres db
 - fetch all queries without getting ip blocked
+- Separate search searxng logic and parsing logic into dif files so any query can be searched and the results returned. Logic can be changed without breaking anything. can use search for future agent search.
+
+- Increase delays into the minutes.
+
+- Auto detect rate limiting by checking the searxng logs.
+
+- Rotate proxies if rate limited.
+
+- Add camoufox for future agent use.
 
 ### Setup:
 
