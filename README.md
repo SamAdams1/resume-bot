@@ -8,13 +8,9 @@ Camoufox - anti bot blocking
 
 - fetch all queries without getting ip blocked
 - Separate search searxng logic and parsing logic into dif files so any query can be searched and the results returned. Logic can be changed without breaking anything. can use search for future agent search.
-
 - Increase delays into the minutes.
-
 - Auto detect rate limiting by checking the searxng logs.
-
 - Rotate proxies if rate limited.
-
 - Add camoufox for future agent use.
 
 ### Setup:
@@ -25,7 +21,10 @@ Camoufox - anti bot blocking
 
 #### run python script:
 
+venv\Script\activate
+source venv/Scripts/activate
 python main.py
+uvicorn src.server:app --reload
 
 #### kill searxng docker instance
 
