@@ -1,4 +1,3 @@
-
 """Search module for querying SearXNG and handling results."""
 
 import requests
