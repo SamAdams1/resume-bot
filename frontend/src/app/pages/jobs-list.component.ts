@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Job, ExcludedJob } from '../models/job.model';
@@ -9,6 +9,7 @@ import { Job, ExcludedJob } from '../models/job.model';
   imports: [CommonModule],
   templateUrl: './jobs-list.component.html',
   styleUrl: './jobs-list.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobsListComponent implements OnInit {
   jobs: Job[] = [];
@@ -19,35 +20,54 @@ export class JobsListComponent implements OnInit {
 
   private apiUrl = 'http://localhost:8000';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef,
+  ) {
+    console.log('JobsListComponent initialized');
+  }
 
   ngOnInit(): void {
+    console.log('JobsListComponent ngOnInit called');
     this.fetchJobs();
     this.fetchExcludedJobs();
   }
 
   private fetchJobs(): void {
-    this.http.get<Job[]>(`${this.apiUrl}/jobs`).subscribe({
+    console.log('Fetching jobs from:', `${this.apiUrl}/jobs`);
+    this.http.get<any>(`${this.apiUrl}/jobs`).subscribe({
       next: (data) => {
-        this.jobs = data;
+        console.log('Jobs loaded successfully:', data);
+        // Handle both array and object responses
+        this.jobs = Array.isArray(data) ? data : [];
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
-        this.error = 'Failed to load jobs';
-        console.error(err);
+        console.error('Failed to load jobs:', err);
+        this.error = `Failed to load jobs: ${err.message}`;
         this.loading = false;
+        this.jobs = [];
+        this.cdr.markForCheck();
       },
     });
   }
 
   private fetchExcludedJobs(): void {
-    this.http.get<ExcludedJob[]>(`${this.apiUrl}/excludedJobs`).subscribe({
+    console.log('Fetching excluded jobs from:', `${this.apiUrl}/excludedJobs`);
+    this.http.get<any>(`${this.apiUrl}/excludedJobs`).subscribe({
       next: (data) => {
-        this.excludedJobs = data;
-        this.excludedJobUrls = new Set(data.map((job) => job.url));
+        console.log('Excluded jobs loaded successfully:', data);
+        // Handle both array and object responses
+        this.excludedJobs = Array.isArray(data) ? data : [];
+        this.excludedJobUrls = new Set(this.excludedJobs.map((job) => job.url));
+        this.cdr.markForCheck();
       },
       error: (err) => {
-        console.error('Failed to load excluded jobs', err);
+        console.error('Failed to load excluded jobs:', err);
+        this.excludedJobs = [];
+        this.excludedJobUrls = new Set();
+        this.cdr.markForCheck();
       },
     });
   }

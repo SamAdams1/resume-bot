@@ -7,7 +7,6 @@ Camoufox - anti bot blocking
 ## todo
 
 - fetch all queries without getting ip blocked
-
 - Increase delays into the minutes.
 - Auto detect rate limiting by checking the searxng logs.
 - Rotate proxies if rate limited.
@@ -15,7 +14,7 @@ Camoufox - anti bot blocking
 
 ### Setup:
 
-#### Start local searxng docker instance:
+#### Start local searxng (http://localhost:8080) docker instance:
 
 `docker compose up -d`
 

@@ -4,5 +4,15 @@
 use_default_settings: true
 
 server:
-  secret_key: "7RPu2nswSzW7MYxjASYHlXhtFXVqmI"
+  secret_key: "${SEARXNG_SECRET_KEY}"
   image_proxy: true
+  limiter: false # Set to false to stop local bot blocking
+  public_instance: false
+
+search:
+  formats:
+    - json
+
+# engines:
+#   google:
+#     enabled: true

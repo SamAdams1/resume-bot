@@ -14,55 +14,105 @@
     <p>{{ error }}</p>
   </div>
 
-  <div class="jobs-grid" *ngIf="!loading && !error">
-    <div
-      class="job-card"
-      *ngFor="let job of getAvailableJobs()"
-      [class.excluded]="isJobExcluded(job)"
-    >
-      <div class="card-header">
-        <h3 class="job-title">{{ job.title }}</h3>
-      </div>
-
-      <div class="card-body">
-        <div class="job-company">{{ job.company || 'N/A' }}</div>
-        <div class="job-location">📍 {{ job.location || 'N/A' }}</div>
-
-        <div class="job-meta">
-          <span *ngIf="job.salary" class="job-salary">💰 {{ job.salary }}</span>
-          <span
-            *ngIf="job.match_percent"
-            class="job-match"
-            [style.background-color]="getMatchPercentageColor(job.match_percent)"
-          >
-            Match: {{ job.match_percent }}%
-          </span>
+  <div class="table-section" *ngIf="!loading && !error && getAvailableJobs().length > 0">
+    <h2>Available Jobs</h2>
+    <div class="cards-grid">
+      <div class="job-card" *ngFor="let job of getAvailableJobs()">
+        <div class="card-title">
+          <a [href]="job.url" target="_blank" class="title-link">{{ job.title }}</a>
         </div>
 
-        <div class="job-description">
-          {{ (job.description || '').substring(0, 120)
-          }}{{ (job.description || '').length > 120 ? '...' : '' }}
-        </div>
-      </div>
+        <div class="card-content">
+          <div class="card-field">
+            <span class="field-label">Company:</span>
+            <span class="field-value">{{ job.company || 'N/A' }}</span>
+          </div>
 
-      <div class="card-footer">
-        <div class="job-status">
-          <span *ngIf="job.applied" class="badge applied">✓ Applied</span>
-          <span *ngIf="job.emailed_hiring_manager" class="badge emailed">✉ Contacted</span>
+          <div class="card-field">
+            <span class="field-label">Location:</span>
+            <span class="field-value">{{ job.location || 'N/A' }}</span>
+          </div>
+
+          <div class="card-field">
+            <span class="field-label">Salary:</span>
+            <span class="field-value">{{ job.salary || 'N/A' }}</span>
+          </div>
+
+          <div class="card-field">
+            <span class="field-label">Match %:</span>
+            <span class="field-value">
+              <span
+                *ngIf="job.match_percent"
+                class="match-badge"
+                [style.background-color]="getMatchPercentageColor(job.match_percent)"
+              >
+                {{ job.match_percent }}%
+              </span>
+              <span *ngIf="!job.match_percent">N/A</span>
+            </span>
+          </div>
+
+          <div class="card-field">
+            <span class="field-label">Applied:</span>
+            <span class="field-value">
+              <span *ngIf="job.applied" class="badge applied">✓ Yes</span>
+              <span *ngIf="!job.applied" class="badge not-applied">✗ No</span>
+            </span>
+          </div>
+
+          <div class="card-field">
+            <span class="field-label">Contacted:</span>
+            <span class="field-value">
+              <span *ngIf="job.emailed_hiring_manager" class="badge contacted">✓ Yes</span>
+              <span *ngIf="!job.emailed_hiring_manager" class="badge not-contacted">✗ No</span>
+            </span>
+          </div>
+
+          <div class="card-field">
+            <span class="field-label">Date Found:</span>
+            <span class="field-value">{{ job.date_found | date: 'short' }}</span>
+          </div>
         </div>
-        <a [href]="job.url" target="_blank" class="apply-button">View Job</a>
       </div>
     </div>
   </div>
 
-  <div class="excluded-section" *ngIf="!loading && excludedJobs.length > 0">
+  <div
+    class="no-data"
+    *ngIf="!loading && !error && getAvailableJobs().length === 0 && excludedJobs.length === 0"
+  >
+    <p>No jobs found</p>
+  </div>
+
+  <div class="table-section excluded-section" *ngIf="!loading && excludedJobs.length > 0">
     <h2>Excluded Jobs ({{ excludedJobs.length }})</h2>
-    <div class="excluded-grid">
+    <div class="cards-grid">
       <div class="excluded-card" *ngFor="let excluded of excludedJobs">
-        <a [href]="excluded.url" target="_blank" class="excluded-link">
-          <span class="excluded-reason">{{ excluded.reason || 'Excluded' }}</span>
-          <span class="excluded-date">{{ excluded.date_excluded | date: 'short' }}</span>
-        </a>
+        <div class="card-title">
+          <a [href]="excluded.url" target="_blank" class="title-link">
+            {{ excluded.title || excluded.url }}
+          </a>
+        </div>
+
+        <div class="card-content">
+          <div class="card-field">
+            <span class="field-label">Query:</span>
+            <span class="field-value">{{ excluded.query || 'N/A' }}</span>
+          </div>
+
+          <div class="card-field">
+            <span class="field-label">Reason:</span>
+            <span class="field-value">{{ excluded.reason || 'N/A' }}</span>
+          </div>
+
+          <div class="card-field">
+            <span class="field-label">Date Found:</span>
+            <span class="field-value">
+              <span *ngIf="excluded.date_found">{{ excluded.date_found | date: 'short' }}</span>
+              <span *ngIf="!excluded.date_found">N/A</span>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
