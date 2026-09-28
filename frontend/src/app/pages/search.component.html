@@ -13,6 +13,7 @@
         <textarea
           id="locations"
           [(ngModel)]="locations"
+          (ngModelChange)="onConfigChange()"
           placeholder="e.g., Remote&#10;New York&#10;San Francisco"
           rows="5"
           [disabled]="isSearching"
@@ -24,6 +25,7 @@
         <textarea
           id="positionTitles"
           [(ngModel)]="positionTitles"
+          (ngModelChange)="onConfigChange()"
           placeholder="e.g., Software Engineer&#10;Frontend Developer&#10;Full Stack Engineer"
           rows="5"
           [disabled]="isSearching"
@@ -35,7 +37,20 @@
         <textarea
           id="jobBoardSites"
           [(ngModel)]="jobBoardSites"
+          (ngModelChange)="onConfigChange()"
           placeholder="e.g., boards.greenhouse.io&#10;linkedin.com&#10;jobs.ashbyhq.com"
+          rows="5"
+          [disabled]="isSearching"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="excludeKeywords">Exclude Keywords (one per line)</label>
+        <textarea
+          id="excludeKeywords"
+          [(ngModel)]="excludeKeywords"
+          (ngModelChange)="onConfigChange()"
+          placeholder="e.g., Senior&#10;Contract&#10;Intern"
           rows="5"
           [disabled]="isSearching"
         ></textarea>
@@ -50,6 +65,14 @@
         <button class="btn btn-secondary" (click)="clearForm()" [disabled]="isSearching">
           Clear
         </button>
+
+        <input
+          #fileInput
+          type="file"
+          accept=".json"
+          (change)="importConfig($event)"
+          style="display: none"
+        />
       </div>
     </div>
 

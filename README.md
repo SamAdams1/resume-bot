@@ -23,7 +23,7 @@ Camoufox - anti bot blocking
 venv\Script\activate
 source venv/Scripts/activate
 python main.py
-uvicorn src.server:app --reload
+uvicorn backend.src.server:app --reload
 
 #### kill searxng docker instance
 

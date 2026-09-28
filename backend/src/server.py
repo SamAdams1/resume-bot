@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from pathlib import Path
+import json
 
 from backend.src.config import DATABASE_URL
 from backend.src.search import search_query
@@ -18,6 +20,15 @@ class SearchRequest(BaseModel):
     locations: list[str]
     titles: list[str]
     sites: list[str]
+    excludes: list[str] = []
+
+
+class SearchConfig(BaseModel):
+    locations: str = ""
+    positionTitles: str = ""
+    jobBoardSites: str = ""
+    excludeKeywords: str = ""
+    timestamp: int
 
 
 app = FastAPI()
@@ -118,3 +129,57 @@ def start_search(request: SearchRequest):
     except Exception as e:
         print(f"Error during search: {e}")
         raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")
+
+
+@app.post("/search-config/save")
+def save_search_config(config: SearchConfig):
+    """Save search configuration to a JSON file."""
+    try:
+        config_dir = Path(__file__).parent.parent.parent / "search_config"
+        config_dir.mkdir(parents=True, exist_ok=True)
+        
+        config_file = config_dir / "search_config.json"
+        
+        config_data = config.dict()
+        with open(config_file, 'w') as f:
+            json.dump(config_data, f, indent=2)
+        
+        return {"status": "success", "message": "Search config saved"}
+    except Exception as e:
+        print(f"Error saving search config: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to save config: {str(e)}")
+
+
+@app.get("/search-config/load")
+def load_search_config():
+    """Load search configuration from JSON file."""
+    try:
+        config_dir = Path(__file__).parent.parent.parent / "search_config"
+        config_file = config_dir / "search_config.json"
+        
+        if not config_file.exists():
+            return None
+        
+        with open(config_file, 'r') as f:
+            config_data = json.load(f)
+        
+        return SearchConfig(**config_data)
+    except Exception as e:
+        print(f"Error loading search config: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to load config: {str(e)}")
+
+
+@app.post("/search-config/clear")
+def clear_search_config():
+    """Clear search configuration file."""
+    try:
+        config_dir = Path(__file__).parent.parent.parent / "search_config"
+        config_file = config_dir / "search_config.json"
+        
+        if config_file.exists():
+            config_file.unlink()
+        
+        return {"status": "success", "message": "Search config cleared"}
+    except Exception as e:
+        print(f"Error clearing search config: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to clear config: {str(e)}")
