@@ -90,26 +90,29 @@
       <div class="excluded-card" *ngFor="let excluded of excludedJobs">
         <div class="card-title">
           <a [href]="excluded.url" target="_blank" class="title-link">
-            {{ excluded.title || excluded.url }}
+            {{ excluded.title || excluded.url || 'N/A' }}
           </a>
         </div>
 
         <div class="card-content">
-          <div class="card-field">
+          <div class="card-field" *ngIf="excluded.query">
             <span class="field-label">Query:</span>
-            <span class="field-value">{{ excluded.query || 'N/A' }}</span>
+            <span class="field-value">{{ excluded.query }}</span>
           </div>
 
-          <div class="card-field">
+          <div class="card-field" *ngIf="excluded.reason">
             <span class="field-label">Reason:</span>
-            <span class="field-value">{{ excluded.reason || 'N/A' }}</span>
+            <span class="field-value">{{ excluded.reason }}</span>
           </div>
 
-          <div class="card-field">
+          <div class="card-field" *ngIf="excluded.date_found || excluded.date_excluded">
             <span class="field-label">Date Found:</span>
             <span class="field-value">
               <span *ngIf="excluded.date_found">{{ excluded.date_found | date: 'short' }}</span>
-              <span *ngIf="!excluded.date_found">N/A</span>
+              <span *ngIf="!excluded.date_found && excluded.date_excluded">{{
+                excluded.date_excluded | date: 'short'
+              }}</span>
+              <span *ngIf="!excluded.date_found && !excluded.date_excluded">N/A</span>
             </span>
           </div>
         </div>

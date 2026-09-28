@@ -1,4 +1,12 @@
 <div class="app-wrapper">
-  <h1 style="text-align: center; padding: 20px; color: #333">Job Search Bot</h1>
+  <nav class="app-nav">
+    <div class="nav-container">
+      <div class="nav-brand">Job Search Bot</div>
+      <ul class="nav-links">
+        <li><a routerLink="/jobs" routerLinkActive="active">Jobs</a></li>
+        <li><a routerLink="/search" routerLinkActive="active">Search</a></li>
+      </ul>
+    </div>
+  </nav>
   <router-outlet></router-outlet>
 </div>

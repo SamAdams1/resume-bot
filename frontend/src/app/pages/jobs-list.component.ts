@@ -60,11 +60,15 @@ export class JobsListComponent implements OnInit {
         console.log('Excluded jobs loaded successfully:', data);
         // Handle both array and object responses
         this.excludedJobs = Array.isArray(data) ? data : [];
-        this.excludedJobUrls = new Set(this.excludedJobs.map((job) => job.url));
+        // Safely map URLs, filtering out any without a URL
+        this.excludedJobUrls = new Set(
+          this.excludedJobs.filter((job) => job?.url).map((job) => job.url),
+        );
         this.cdr.markForCheck();
       },
       error: (err) => {
-        console.error('Failed to load excluded jobs:', err);
+        console.warn('Failed to load excluded jobs (table may not exist):', err);
+        // Gracefully handle missing table by setting empty arrays
         this.excludedJobs = [];
         this.excludedJobUrls = new Set();
         this.cdr.markForCheck();

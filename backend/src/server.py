@@ -1,14 +1,23 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
 from backend.src.config import DATABASE_URL
+from backend.src.search import search_query
+
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 from backend.models.Job import Job
 from backend.models.ExcludedJob import ExcludedJob
+
+
+class SearchRequest(BaseModel):
+    locations: list[str]
+    titles: list[str]
+    sites: list[str]
 
 
 app = FastAPI()
@@ -75,3 +84,37 @@ def read_excluded_job_by_location(location: str):
     finally:
         session.close()
 
+
+@app.post("/search")
+def start_search(request: SearchRequest):
+    """Start a job search with the provided parameters.
+    
+    Args:
+        request: SearchRequest containing locations, titles, and sites
+        
+    Returns:
+        dict with total_results count
+    """
+    try:
+        if not request.locations or not request.titles or not request.sites:
+            raise HTTPException(status_code=400, detail="All fields are required")
+        
+        total_results = 0
+        
+        # Run search for each combination of location, title, and site
+        for location in request.locations:
+            for title in request.titles:
+                for site in request.sites:
+                    print(f"\nSearching for: {title} in {location} on {site}")
+                    results = search_query(title, location, site)
+                    total_results += results
+        
+        return {
+            "status": "completed",
+            "total_results": total_results,
+            "message": f"Search completed with {total_results} total results found"
+        }
+        
+    except Exception as e:
+        print(f"Error during search: {e}")
+        raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")

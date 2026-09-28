@@ -13,8 +13,11 @@ export interface Job {
 }
 
 export interface ExcludedJob {
-  id: number;
+  id?: number;
   url: string;
   reason?: string;
-  date_excluded: string;
+  query?: string;
+  title?: string;
+  date_found?: string;
+  date_excluded?: string;
 }

@@ -1,0 +1,70 @@
+<div class="search-container">
+  <div class="search-header">
+    <h1>Job Search</h1>
+    <p>Configure and run job search queries</p>
+  </div>
+
+  <div class="search-form">
+    <div class="form-section">
+      <h2>Search Parameters</h2>
+
+      <div class="form-group">
+        <label for="locations">Locations (one per line)</label>
+        <textarea
+          id="locations"
+          [(ngModel)]="locations"
+          placeholder="e.g., Remote&#10;New York&#10;San Francisco"
+          rows="5"
+          [disabled]="isSearching"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="positionTitles">Position Titles (one per line)</label>
+        <textarea
+          id="positionTitles"
+          [(ngModel)]="positionTitles"
+          placeholder="e.g., Software Engineer&#10;Frontend Developer&#10;Full Stack Engineer"
+          rows="5"
+          [disabled]="isSearching"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="jobBoardSites">Job Board Sites (one per line)</label>
+        <textarea
+          id="jobBoardSites"
+          [(ngModel)]="jobBoardSites"
+          placeholder="e.g., boards.greenhouse.io&#10;linkedin.com&#10;jobs.ashbyhq.com"
+          rows="5"
+          [disabled]="isSearching"
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" (click)="startSearch()" [disabled]="isSearching">
+          <span *ngIf="!isSearching">Start Search</span>
+          <span *ngIf="isSearching">Searching...</span>
+        </button>
+
+        <button class="btn btn-secondary" (click)="clearForm()" [disabled]="isSearching">
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <div class="search-status" *ngIf="searchStatus || searchMessage || searchError">
+      <div *ngIf="searchError" class="alert alert-error">
+        <strong>Error:</strong> {{ searchError }}
+      </div>
+
+      <div *ngIf="searchStatus && !searchError" class="alert alert-info">
+        <strong>Status:</strong> {{ searchStatus }}
+      </div>
+
+      <div *ngIf="searchMessage" class="alert alert-success">
+        <strong>Result:</strong> {{ searchMessage }}
+      </div>
+    </div>
+  </div>
+</div>
