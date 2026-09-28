@@ -12,10 +12,10 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import create_engine
 
-from config import DATABASE_URL
-from models.base import Base
-from models.Job import Job
-from models.ExcludedJob import ExcludedJob
+from backend.src.config import DATABASE_URL
+from backend.models.base import Base
+from backend.models.Job import Job
+from backend.models.ExcludedJob import ExcludedJob
 
 # Create engine and session (initialize once)
 engine = create_engine(DATABASE_URL, echo=False)

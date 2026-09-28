@@ -1,0 +1,69 @@
+<div class="jobs-container">
+  <div class="jobs-header">
+    <h1>Job Listings</h1>
+    <p class="job-count">
+      Available: {{ getAvailableJobs().length }} | Excluded: {{ excludedJobs.length }}
+    </p>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading jobs...</p>
+  </div>
+
+  <div *ngIf="error" class="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <div class="jobs-grid" *ngIf="!loading && !error">
+    <div
+      class="job-card"
+      *ngFor="let job of getAvailableJobs()"
+      [class.excluded]="isJobExcluded(job)"
+    >
+      <div class="card-header">
+        <h3 class="job-title">{{ job.title }}</h3>
+      </div>
+
+      <div class="card-body">
+        <div class="job-company">{{ job.company || 'N/A' }}</div>
+        <div class="job-location">📍 {{ job.location || 'N/A' }}</div>
+
+        <div class="job-meta">
+          <span *ngIf="job.salary" class="job-salary">💰 {{ job.salary }}</span>
+          <span
+            *ngIf="job.match_percent"
+            class="job-match"
+            [style.background-color]="getMatchPercentageColor(job.match_percent)"
+          >
+            Match: {{ job.match_percent }}%
+          </span>
+        </div>
+
+        <div class="job-description">
+          {{ (job.description || '').substring(0, 120)
+          }}{{ (job.description || '').length > 120 ? '...' : '' }}
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="job-status">
+          <span *ngIf="job.applied" class="badge applied">✓ Applied</span>
+          <span *ngIf="job.emailed_hiring_manager" class="badge emailed">✉ Contacted</span>
+        </div>
+        <a [href]="job.url" target="_blank" class="apply-button">View Job</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="excluded-section" *ngIf="!loading && excludedJobs.length > 0">
+    <h2>Excluded Jobs ({{ excludedJobs.length }})</h2>
+    <div class="excluded-grid">
+      <div class="excluded-card" *ngFor="let excluded of excludedJobs">
+        <a [href]="excluded.url" target="_blank" class="excluded-link">
+          <span class="excluded-reason">{{ excluded.reason || 'Excluded' }}</span>
+          <span class="excluded-date">{{ excluded.date_excluded | date: 'short' }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,12 +2,12 @@ from fastapi import FastAPI
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
-from src.config import DATABASE_URL
+from backend.src.config import DATABASE_URL
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-from models.Job import Job
-from models.ExcludedJob import ExcludedJob
+from backend.models.Job import Job
+from backend.models.ExcludedJob import ExcludedJob
 
 
 app = FastAPI()

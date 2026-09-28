@@ -1,5 +1,5 @@
 # Define Job model
-from models.base import Base
+from backend.models.base import Base
 from datetime import datetime
 
 from sqlalchemy import Column, String, DateTime, Integer, Boolean

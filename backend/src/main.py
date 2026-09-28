@@ -2,8 +2,8 @@
 
 import time
 
-from config import TIMER, SITES, ROLES, LOCATIONS
-from search import search_query
+from backend.src.config import TIMER, SITES, ROLES, LOCATIONS
+from backend.src.search import search_query
 
 # Counter tracking
 total_jobs_found = 0

@@ -4,10 +4,10 @@ import requests
 import time
 import random
 
-from config import (
+from backend.src.config import (
     ENGINES, HEADERS, SEARXNG_URL, RATE_LIMITED_SECONDS
 )
-from parse_jobs import parse_query_results
+from backend.src.parse_jobs import parse_query_results
 
 
 def search_query(role: str, location: str, site: str) -> int:

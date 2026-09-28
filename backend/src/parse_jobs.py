@@ -9,9 +9,9 @@ from urllib.parse import urlparse
 # Add parent directory to path to import models
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from config import EXCLUDE
-from models.Job import Job
-from db_write import write_results_to_database, write_excluded_to_database
+from backend.src.config import EXCLUDE
+from backend.models.Job import Job
+from backend.src.db_write import write_results_to_database, write_excluded_to_database
 
 
 def extract_company_name(url):
