@@ -1,0 +1,16 @@
+{
+  "name": "applyjobs",
+  "version": "1.0.0",
+  "description": "Job application automation with search engine and AI",
+  "bin": {
+    "app": "./cli.js"
+  },
+  "scripts": {
+    "start": "node cli.js start",
+    "stop": "node cli.js stop",
+    "setup": "node cli.js setup"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

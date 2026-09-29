@@ -26,6 +26,43 @@
   margin: 0;
 }
 
+/* View Tabs */
+.view-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #e0e0e0;
+  justify-content: center;
+}
+
+.tab-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #666;
+  background-color: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-button:hover:not(:disabled) {
+  color: #1a73e8;
+  border-bottom-color: #1a73e8;
+}
+
+.tab-button.active {
+  color: #1a73e8;
+  border-bottom-color: #1a73e8;
+}
+
+.tab-button:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .loading,
 .error,
 .no-data {
@@ -183,11 +220,96 @@
   white-space: nowrap;
 }
 
-/* Excluded Section */
-.excluded-section {
-  margin-top: 40px;
-  border-top: 2px solid #e0e0e0;
-  padding-top: 20px;
+/* Card Actions */
+.card-actions {
+  padding: 10px 15px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.delete-button {
+  padding: 8px 12px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+.delete-button:active {
+  transform: scale(0.98);
+}
+
+/* Delete Confirmation */
+.delete-confirmation {
+  padding: 10px;
+  background-color: #fff3e0;
+  border: 1px solid #ffb74d;
+  border-radius: 4px;
+  animation: slideDown 0.2s ease;
+}
+
+.delete-confirmation p {
+  margin: 0 0 10px 0;
+  color: #e65100;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.confirmation-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.confirm-btn,
+.cancel-btn {
+  flex: 1;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.confirm-btn {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.confirm-btn:hover {
+  background-color: #b71c1c;
+}
+
+.cancel-btn {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #bdbdbd;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive Design */

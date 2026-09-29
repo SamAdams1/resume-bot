@@ -6,6 +6,25 @@
     </p>
   </div>
 
+  <div class="view-tabs">
+    <button
+      class="tab-button"
+      [class.active]="currentView === 'available'"
+      (click)="switchView('available')"
+      [disabled]="getAvailableJobs().length === 0"
+    >
+      Available ({{ getAvailableJobs().length }})
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="currentView === 'excluded'"
+      (click)="switchView('excluded')"
+      [disabled]="excludedJobs.length === 0"
+    >
+      Excluded ({{ excludedJobs.length }})
+    </button>
+  </div>
+
   <div *ngIf="loading" class="loading">
     <p>Loading jobs...</p>
   </div>
@@ -14,7 +33,11 @@
     <p>{{ error }}</p>
   </div>
 
-  <div class="table-section" *ngIf="!loading && !error && getAvailableJobs().length > 0">
+  <!-- Available Jobs View -->
+  <div
+    class="table-section"
+    *ngIf="!loading && !error && currentView === 'available' && getAvailableJobs().length > 0"
+  >
     <h2>Available Jobs</h2>
     <div class="cards-grid">
       <div class="job-card" *ngFor="let job of getAvailableJobs()">
@@ -73,18 +96,48 @@
             <span class="field-value">{{ job.date_found | date: 'short' }}</span>
           </div>
         </div>
+
+        <div class="card-actions">
+          <button
+            class="delete-button"
+            (click)="toggleDeleteConfirmation(job.id, 'job')"
+            title="Delete this job"
+          >
+            Delete
+          </button>
+          <div
+            class="delete-confirmation"
+            *ngIf="deleteConfirmationId === job.id && deleteConfirmationType === 'job'"
+          >
+            <p>Are you sure?</p>
+            <div class="confirmation-buttons">
+              <button class="confirm-btn" (click)="confirmDelete()">Confirm</button>
+              <button class="cancel-btn" (click)="cancelDelete()">Cancel</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <div
     class="no-data"
-    *ngIf="!loading && !error && getAvailableJobs().length === 0 && excludedJobs.length === 0"
+    *ngIf="
+      !loading &&
+      !error &&
+      currentView === 'available' &&
+      getAvailableJobs().length === 0 &&
+      excludedJobs.length === 0
+    "
   >
     <p>No jobs found</p>
   </div>
 
-  <div class="table-section excluded-section" *ngIf="!loading && excludedJobs.length > 0">
+  <!-- Excluded Jobs View -->
+  <div
+    class="table-section"
+    *ngIf="!loading && currentView === 'excluded' && excludedJobs.length > 0"
+  >
     <h2>Excluded Jobs ({{ excludedJobs.length }})</h2>
     <div class="cards-grid">
       <div class="excluded-card" *ngFor="let excluded of excludedJobs">
@@ -114,6 +167,26 @@
               }}</span>
               <span *ngIf="!excluded.date_found && !excluded.date_excluded">N/A</span>
             </span>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button
+            class="delete-button"
+            (click)="toggleDeleteConfirmation(excluded.id, 'excluded')"
+            title="Delete this excluded job"
+          >
+            Delete
+          </button>
+          <div
+            class="delete-confirmation"
+            *ngIf="deleteConfirmationId === excluded.id && deleteConfirmationType === 'excluded'"
+          >
+            <p>Are you sure?</p>
+            <div class="confirmation-buttons">
+              <button class="confirm-btn" (click)="confirmDelete()">Confirm</button>
+              <button class="cancel-btn" (click)="cancelDelete()">Cancel</button>
+            </div>
           </div>
         </div>
       </div>

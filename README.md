@@ -14,20 +14,62 @@ Camoufox - anti bot blocking
 
 ### Setup:
 
-#### Start local searxng (http://localhost:8080) docker instance:
+#### Quick Start (Recommended)
 
-`docker compose up -d`
+Start everything with a single command from the project root:
 
-#### run python script:
+```bash
+npm start
+# or
+node cli.js start
+```
 
-venv\Script\activate
+This automatically starts:
+
+- 🗄️ Docker services (Searxng + Valkey database)
+- 🐍 Python backend (FastAPI) at http://localhost:8000
+- 🎨 Angular frontend at http://localhost:4200
+
+To stop all services, press `Ctrl+C` or run:
+
+```bash
+npm stop
+# or
+node cli.js stop
+```
+
+#### Manual Setup (if needed)
+
+**Start Docker services:**
+
+```bash
+docker compose up -d
+```
+
+**Start backend in a separate terminal:**
+
+```bash
+# Windows
+venv\Scripts\activate
+
+# Unix/Mac
 source venv/Scripts/activate
-python main.py
+
 uvicorn backend.src.server:app --reload
+```
 
-#### kill searxng docker instance
+**Start frontend in another terminal:**
 
+```bash
+cd frontend
+npm start
+```
+
+**Stop Docker services:**
+
+```bash
 docker compose down
+```
 
 #### useful docs:
 

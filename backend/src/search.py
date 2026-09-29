@@ -24,7 +24,7 @@ def search_query(role: str, location: str, site: str) -> int:
     all_results = []
     
     page = 1
-    MAX_PAGES = 1  # Maximum number of pages to query
+    MAX_PAGES = 100  # Maximum number of pages to query
     consecutive_empty_pages = 0
     MAX_EMPTY_PAGES = 3  # Stop after 3 consecutive empty pages
     
@@ -41,7 +41,10 @@ def search_query(role: str, location: str, site: str) -> int:
         }
         
         try:
-            response = requests.get(f"{SEARXNG_URL}/search", params=params, headers=HEADERS, timeout=10)
+            # Add required headers for SearXNG
+            headers_with_proxy = HEADERS.copy()
+            headers_with_proxy['X-Forwarded-For'] = '127.0.0.1'
+            response = requests.get(f"{SEARXNG_URL}/search", params=params, headers=headers_with_proxy, timeout=10)
             
             # Check for rate limiting
             if response.status_code == 429:
@@ -82,7 +85,7 @@ def search_query(role: str, location: str, site: str) -> int:
                 print(f"QUERY: {query} (Page {page}, {len(results)} results)")
             
             # Random delay between 3-8 seconds
-            DELAY = random.uniform(3, 8)
+            DELAY = random.uniform(6, 10)
             time.sleep(DELAY)
             page += 1
             

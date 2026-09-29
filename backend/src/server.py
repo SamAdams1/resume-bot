@@ -183,3 +183,47 @@ def clear_search_config():
     except Exception as e:
         print(f"Error clearing search config: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to clear config: {str(e)}")
+
+
+@app.delete("/jobs/{job_id}")
+def delete_job(job_id: int):
+    """Delete a job by ID."""
+    session = SessionLocal()
+    try:
+        job = session.query(Job).filter(Job.id == job_id).first()
+        if not job:
+            raise HTTPException(status_code=404, detail=f"Job with id={job_id} not found")
+        
+        session.delete(job)
+        session.commit()
+        return {"status": "success", "message": f"Job with id={job_id} deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        session.rollback()
+        print(f"Error deleting job: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete job: {str(e)}")
+    finally:
+        session.close()
+
+
+@app.delete("/excludedJobs/{excluded_job_id}")
+def delete_excluded_job(excluded_job_id: int):
+    """Delete an excluded job by ID."""
+    session = SessionLocal()
+    try:
+        excluded_job = session.query(ExcludedJob).filter(ExcludedJob.id == excluded_job_id).first()
+        if not excluded_job:
+            raise HTTPException(status_code=404, detail=f"Excluded job with id={excluded_job_id} not found")
+        
+        session.delete(excluded_job)
+        session.commit()
+        return {"status": "success", "message": f"Excluded job with id={excluded_job_id} deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        session.rollback()
+        print(f"Error deleting excluded job: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete excluded job: {str(e)}")
+    finally:
+        session.close()

@@ -17,6 +17,9 @@ export class JobsListComponent implements OnInit {
   excludedJobUrls: Set<string> = new Set();
   loading = true;
   error: string | null = null;
+  currentView: 'available' | 'excluded' = 'available';
+  deleteConfirmationId: number | null = null;
+  deleteConfirmationType: 'job' | 'excluded' | null = null;
 
   private apiUrl = 'http://localhost:8000';
 
@@ -90,5 +93,68 @@ export class JobsListComponent implements OnInit {
     if (percentage >= 60) return '#2196f3';
     if (percentage >= 40) return '#ff9800';
     return '#f44336';
+  }
+
+  switchView(view: 'available' | 'excluded'): void {
+    this.currentView = view;
+  }
+
+  toggleDeleteConfirmation(id: number, type: 'job' | 'excluded'): void {
+    if (this.deleteConfirmationId === id && this.deleteConfirmationType === type) {
+      this.deleteConfirmationId = null;
+      this.deleteConfirmationType = null;
+    } else {
+      this.deleteConfirmationId = id;
+      this.deleteConfirmationType = type;
+    }
+  }
+
+  cancelDelete(): void {
+    this.deleteConfirmationId = null;
+    this.deleteConfirmationType = null;
+  }
+
+  confirmDelete(): void {
+    if (this.deleteConfirmationId === null) return;
+
+    if (this.deleteConfirmationType === 'job') {
+      this.deleteJobConfirmed(this.deleteConfirmationId);
+    } else if (this.deleteConfirmationType === 'excluded') {
+      this.deleteExcludedJobConfirmed(this.deleteConfirmationId);
+    }
+
+    this.deleteConfirmationId = null;
+    this.deleteConfirmationType = null;
+  }
+
+  private deleteJobConfirmed(jobId: number): void {
+    this.http.delete<any>(`${this.apiUrl}/jobs/${jobId}`).subscribe({
+      next: (response) => {
+        console.log('Job deleted successfully:', response);
+        this.jobs = this.jobs.filter((job) => job.id !== jobId);
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Failed to delete job:', err);
+        alert(`Failed to delete job: ${err.error?.detail || err.message}`);
+      },
+    });
+  }
+
+  private deleteExcludedJobConfirmed(excludedJobId: number): void {
+    this.http.delete<any>(`${this.apiUrl}/excludedJobs/${excludedJobId}`).subscribe({
+      next: (response) => {
+        console.log('Excluded job deleted successfully:', response);
+        this.excludedJobs = this.excludedJobs.filter((job) => job.id !== excludedJobId);
+        this.excludedJobUrls.delete(
+          this.excludedJobs.find((job) => job.id === excludedJobId)?.url || '',
+        );
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Failed to delete excluded job:', err);
+        alert(`Failed to delete excluded job: ${err.error?.detail || err.message}`);
+      },
+    });
   }
 }

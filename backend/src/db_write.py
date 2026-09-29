@@ -50,6 +50,7 @@ def write_results_to_database(jobs):
                 num_jobs_saved += 1
             else:
                 print(f"  ↻ Already in DB: {job.title}")
+            print(job.url)
         
         session.commit()
         print(f"Successfully saved {num_jobs_saved} new jobs")
